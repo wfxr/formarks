@@ -2,6 +2,8 @@
 
 `formarks` is a zsh plugin for quickly navigating your work path
 
+![screenshot](https://raw.githubusercontent.com/wfxr/i/master/formarks.gif)
+
 ## Installation
 
 Make sure you have [`fzf`](https://github.com/junegunn/fzf) installed.
@@ -36,6 +38,8 @@ Clone this repo somewhere and source the `formarks.plugin.zsh` at ~/.zshrc.
 | `dmarks` | **d**elete the selected bookmarks |
 | `lmarks` | **l**ist all registered bookmarks |
 | `cmarks` | **c**lean invalid bookmarks       |
+
+Default key-binding for `jump` is `ctrl - g`.
 
 ## Credits
 
