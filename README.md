@@ -15,14 +15,15 @@ zplug 'wfxr/formarks'
 ```
 
 ### for [zgen](https://github.com/tarjoilija/zgen)
-```
-    zgen load wfxr/formarks
+
+``` zsh
+zgen load wfxr/formarks
 ```
 
 ### for [antigen](https//github.com/zsh-users/antigen)
 
-```
-    antigen bundle wfxr/formarks
+``` zsh
+antigen bundle wfxr/formarks
 ```
 
 ### Manually
