@@ -32,13 +32,17 @@ Clone this repo somewhere and source the `formarks.plugin.zsh` at ~/.zshrc.
 | Commond  | Action                        |
 | -------- | ----------------------------- |
 | `mark`   | **m**ark current path             |
-| `jump`   | **J**ump to the selected bookmark |
-| `dmarks` | **D**elete the selected bookmarks |
-| `lmarks` | **L**ist all registered bookmarks |
-| `cmarks` | **C**lean invalid bookmarks       |
+| `jump`   | **j**ump to the selected bookmark |
+| `dmarks` | **d**elete the selected bookmarks |
+| `lmarks` | **l**ist all registered bookmarks |
+| `cmarks` | **c**lean invalid bookmarks       |
 
 ## Credits
 
 *  [urbainvaes](https://github.com/urbainvaes): The project is originally forked from his [fzf-marks](https://github.com/urbainvaes/fzf-marks). Merging seams not possible for now because there are too many different commits between them. I do lots of modifications on `zsh` part but don't want to keep update with the `bash` part. So I migrate the [forked repo](https://github.com/wfxr/fzf-marks) to this new repo.
 
-[MIT](LICENSE.txt)
+## [License](LICENSE.txt)
+
+The MIT License (MIT)
+
+Copyright (c) 2018 Wenxuan Zhang
