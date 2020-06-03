@@ -32,7 +32,7 @@ Clone this repo somewhere and source the `formarks.plugin.zsh` at ~/.zshrc.
 
 ## Usage
 
-| Commond  | Action                        |
+| Command  | Action                        |
 | -------- | ----------------------------- |
 | `mark`   | **m**ark current path             |
 | `jump`   | **j**ump to the selected bookmark |
@@ -41,6 +41,12 @@ Clone this repo somewhere and source the `formarks.plugin.zsh` at ~/.zshrc.
 | `cmarks` | **c**lean invalid bookmarks       |
 
 Default key-binding for `jump` is `ctrl - g`.
+
+## Env variable
+
+You can set a different directory to your marks than $HOME/.pathmarks exporting $PATHMARKS_FILE before loading this plugin.
+
+Eg: `export $PATHMARKS_FILE=$XDG_DATA_HOME/pathmarks/file`
 
 ## Credits
 
