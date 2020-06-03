@@ -5,7 +5,8 @@
 #  Created: 2018-04-15 10:24
 #===============================================================================
 
-export PATHMARKS_FILE="$HOME/.pathmarks" && touch "$PATHMARKS_FILE"
+[ -z "${PATHMARKS_FILE}" ] && export PATHMARKS_FILE=$HOME/.pathmarks
+[ ! -f $PATHMARKS_FILE ] && mkdir -p "$(dirname "$PATHMARKS_FILE")" && touch "$PATHMARKS_FILE"
 
 wfxr::pathmarks-fzf() {
     local list
