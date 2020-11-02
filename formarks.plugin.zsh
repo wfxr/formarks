@@ -11,10 +11,7 @@
 wfxr::pathmarks-fzf() {
     local list
     (( $+commands[exa] )) && list='exa -lbhg --git' || list='ls -l'
-    fzf --border \
-        --ansi \
-        --cycle \
-        --reverse \
+    fzf --ansi \
         --height '40%' \
         --preview="echo {}|sed 's#.*->  ##'| xargs $list --color=always" \
         --preview-window="right:50%" \
