@@ -4,13 +4,23 @@
 #    Email: wenxuangm@gmail.com
 #  Created: 2018-04-15 10:24
 #===============================================================================
+#    Author: Lucas Burns
+#     Email: burnsac@me.com
+#  Modified: 2021-07-21 13:52
+#===============================================================================
 
-[ -z "${PATHMARKS_FILE}" ] && export PATHMARKS_FILE=$HOME/.pathmarks
-[ ! -f $PATHMARKS_FILE ] && mkdir -p "$(dirname "$PATHMARKS_FILE")" && touch "$PATHMARKS_FILE"
+# No builtin just for syntax highlighting in vim
+setopt extendedglob noshortloops rcexpandparam
+zmodload -Fa zsh/files b:zf_mkdir
+zmodload -Fa zsh/parameter p:commands
+
+[[ -z "$PATHMARKS_FILE" ]]   && builtin export PATHMARKS_FILE="${HOME}/.pathmarks"
+[[ ! -f "$PATHMARKS_FILE" ]] && builtin zf_mkdir -p "${PATHMARKS_FILE:h}" && command touch "$PATHMARKS_FILE"
 
 wfxr::pathmarks-fzf() {
     local list
-    (( $+commands[exa] )) && list='exa -lbhg --git' || list='ls -l'
+    # Sometimes commands won't pick up a binary
+    ( (( $+commands[exa] )) || whence -va exa &>/dev/null ) && list='exa -lbhg --git' || list='ls -l'
     fzf --ansi \
         --height '40%' \
         --preview="echo {}|sed 's#.*->  ##'| xargs $list --color=always" \
@@ -19,13 +29,13 @@ wfxr::pathmarks-fzf() {
 }
 
 function mark() {
-    [[ "$#" -eq 0 ]] && wfxr::mark_usage && return 1
+    (( $# == 0 )) && wfxr::mark_usage && return 1
     local mark_to_add
-    mark_to_add=$(echo "$*: $(pwd)")
-    echo "${mark_to_add}" >> "${PATHMARKS_FILE}"
+    mark_to_add=$(builtin print -Rn "$*: ${${$(pwd)}// /___}")
+    builtin print -Rn "${mark_to_add}" >> "${PATHMARKS_FILE}"
 
-    echo "** The following mark has been added **"
-    echo "${mark_to_add}"
+    builtin print -Pr "%F{4}%B===%f%b The following mark has been %F{1}added%f %F{4}%B===%f%b"
+    builtin print -Pr "${mark_to_add}"
 }
 
 function dmarks()  {
@@ -37,7 +47,7 @@ function dmarks()  {
 
 # List all marks
 function wfxr::lmarks() {
-    sed 's#: # -> #' "$PATHMARKS_FILE"| nl| column -t
+    sed 's#: # -> #' "$PATHMARKS_FILE"| nl | column -t
 }
 
 function lmarks() {
@@ -73,16 +83,16 @@ function wfxr::pathmarks-delete() {
     local lines
     lines="$*"
     if [[ -n $lines ]]; then
-        echo "$lines" |awk '{print $1}'| sed 's/$/d/'| paste -sd';'| xargs -I{} sed -i "{}" "$PATHMARKS_FILE"
-        echo "** The following marks have been deleted **"
-        echo "$lines"
+        builtin print -R "$lines" | awk '{print $1}'| sed 's/$/d/'| paste -sd';'| xargs -I{} sed -i "{}" "$PATHMARKS_FILE"
+        builtin print -Pr "%F{4}%B===%b%f The following marks have been %F{1}%Bdeleted%b%f %F{4}%B===%b%f"
+        builtin print -r "$lines"
     fi
 }
 
 # Show usage for function mark
 function wfxr::mark_usage() {
-    echo "Usage: mark <bookmark>" >&2
-    echo "   eg: mark downloads"
+    builtin print -Pu2 "%F{2}%bUsage%b%f: %F{3}mark%f <bookmark>"
+    builtin print -Pu2 "eg: %F{3}mark%f downloads"
 }
 
 # List invalid marks
@@ -90,28 +100,30 @@ function wfxr::pathmarks-invalid() {
     local line
     local directory
     while read line; do
-        directory=$(echo "$line" |sed 's#.*->  ##')
-        test -d "$directory" || echo "$line"
+        directory=$(echo "${line//___/ }" | sed 's#.*->  ##')
+        builtin test -d "${~directory}" || builtin print -R "$line"
     done
 }
 
 function jump() {
-    local target
-    target=$(lmarks |
-        wfxr::pathmarks-colorize |
-        wfxr::pathmarks-fzf --query="$*" -1|
-        sed 's#.*->  ##')
-    if [[ -d "$target" ]]; then
-        cd "$target" 
+  local target
+  target=${$(lmarks |
+             wfxr::pathmarks-colorize |
+             wfxr::pathmarks-fzf --query="$*" -1 |
+             sed 's#.*->  ##')//___/ }
+    if [[ -d "${(Q)target}" ]]; then
+        builtin cd "${(Q)target}"
         local precmd
-        for precmd in $precmd_functions; do
-            $precmd
-        done
-        zle reset-prompt
+        for precmd in "$precmd_functions[@]"; do
+          "$precmd"
+          builtin zle reset-prompt
+      done
     else
-        zle redisplay # Just redisplay if no jump to do
+        builtin zle redisplay # Just redisplay if no jump to do
     fi
 }
 
-zle -N jump
-bindkey ${FZF_MARKS_JUMP:-'^g'} jump
+builtin zle -N jump
+builtin bindkey ${FZF_MARKS_JUMP:-'^g'} jump
+
+# vim: ft=zsh:et:sw=0:ts=4:sts=4:fdm=marker:fmr={{{,}}}:
