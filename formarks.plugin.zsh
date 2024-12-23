@@ -10,7 +10,7 @@
 
 wfxr::pathmarks-fzf() {
     local list
-    (( $+commands[exa] )) && list='exa -lbhg --git' || list='ls -l'
+    (( $+commands[eza] )) && list='eza -lbhg --git' || list='ls -l'
     fzf --ansi \
         --height '40%' \
         --preview="echo {}|sed 's#.*->  ##'| xargs $list --color=always" \
@@ -37,7 +37,7 @@ function dmarks()  {
 
 # List all marks
 function wfxr::lmarks() {
-    sed 's#: # -> #' "$PATHMARKS_FILE"| nl| column -t
+    sed 's#: # -> #' "$PATHMARKS_FILE" | sort | nl | column -t
 }
 
 function lmarks() {
